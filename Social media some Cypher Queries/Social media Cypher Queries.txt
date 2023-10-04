@@ -1,0 +1,78 @@
+*) Get USER post
+  "match(u:USER)-[:POSTED_BY]-(p:POST) return p"
+
+*) Get a User's Followers
+   "match(u:USER)-[f:FOLLOWS]->(n) return n"
+
+*) Find Posts with a Specific Hashtag
+   "match(p:POST)-[:TAG]->(h:HASHTAG) where h.tag="it's beautifull" return p"
+
+*) Get Users Who Liked a Post
+   "match(p:POST{postid:1})<-[:LIKED_BY]-(u:USER) return u"
+
+*) Find Replies to a Comment
+   "match(c:COMMENT)-[:REPLIES_TO]->(n) where c.commentid='104' return n"
+
+*) Get Posts with Likes count
+   "match(p:POST)<-[:LIKED_BY]-(u:USER) where p.postname="super" return u.username,count(row)"
+
+*) Get Post name b/w the UserID
+   "match(u:USER)-[:POSTED_BY]->(p:POST) where 10 <= u.userId <=12 return p.postname,p.postid"
+
+*) Testing less than or greater than
+   "match(u:USER) where u.username="kiran" return u.userId<=12,u.userId>12, u.userId<13"
+
+*) Testing Inequality
+   "match(u:USER)-[:MEMBER_OF]->(g:GROUP) where g.groupid<>52 return g.groupname,u.username"
+
+*) Testing null property values
+   "match(h:HASHTAG) where h.hashtagid is not null return h.tag,h.hashtagid"
+
+*) Discovering relationship types
+   "match(u:USER)-[r]->(p:POST) where u.username="kiran" return p.postname,type(r) as relationship"
+
+*) Testing list inclusion
+   "match(u:USER)-[:FOLLOWS]->()-[:POSTED_BY]->(p:POST) where "super" in p.postname or " super" in p.postname return u.username,u.location"
+
+*) Start with
+   "match(u:USER) where u.username starts with 'a' return u.username"
+
+*) Ends with
+   "match(u:USER) where u.username ends with 'a' return u.username"
+
+*) To find SUBSTRING
+   "match(p:Person) where p.name contains 'Jim' return p.name"
+
+*) Case-sensitive strings
+   " match(u:USER) where toUpper(u.username) starts with 'K' return u.username "
+   " match(u:USER) where toLower(u.username) starts with 'k' return u.username "
+
+*) About indexes for queries
+   "explain match(u:USER) where toUpper(u.username) starts with 'p' return u.username,u.location,u.phone"
+
+*) Patterns in the graph
+   " match(u:USER)-[:POSTED_BY]->(p:POST) where u.username='kiran' and exists {(u)-[:LIKED_BY]->(p)} return u.username,labels(u),p.postname,labels(p) "
+
+*) Profiling queries
+   "profile match(u:USER)-[:POSTED_BY]->(p:POST) where u.username='kiran' and exists {(u)-[:LIKED_BY]->(p)} return u.username,labels(u),p.postname,labels(p)"
+   "profile match(u:USER)-[:POSTED_BY]->(p:POST)<-[:LIKED_BY]-(u) return u.username,labels(u),p.postname"
+
+*) Finding non-patterns
+   "match(u:USER)-[:POSTED_BY]->(p:POST) where u.username='kiran' and not exists {(u)-[:LIKED_BY]->(p)} return u.username,labels(u),p.postname"
+
+*) Optionally matching a pattern
+   "match(u:USER) where u.username starts with 'k' optional match (u)-[:POSTED_BY]->(p:POST) return p.postname,u.username"
+   "match(u:USER)-[:FOLLOWS]->(n) where u.username starts with 'p' optional match(n)-[:POSTED_BY]->(p:POST) return p.postname,n.username"
+
+*) Using multiple MATCH clauses
+   "match(u:USER)-[:POSTED_BY]->(p:POST) where p.postname starts with 's' match(n:USER)-[:LIKED_BY]-(p) return u.username,p.postname,n.username"
+   "match(u:USER)-[:FOLLOWS]->(n) where u.username starts with 'm' match(n)-[:POSTED_BY]-(p:POST) match(p)-[:TAG]->(h:HASHTAG) return u.username,n.username,p.postname,h.tag"
+
+*) Ordering 
+   "match(u:USER) return u.username as name, u.userId as id order by id"
+
+*) Find postname and and timestamp giving username
+   "match(u:USER)-[:POSTED_BY]->(p:POST) where u.username='kiran' return p.postname,p.timestamp"
+
+*) 
+   ""
