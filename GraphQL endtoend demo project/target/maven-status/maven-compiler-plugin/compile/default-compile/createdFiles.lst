@@ -1,0 +1,4 @@
+com\example\newproject\model\Movie.class
+com\example\newproject\NewprojectApplication.class
+com\example\newproject\repository\MovieRepository.class
+com\example\newproject\resolver\MovieResolver.class
