@@ -1,0 +1,9 @@
+schema {
+    query: Query
+}
+
+type Query {
+    searchWords(startsWith:String!):[String]
+    searchword(statingwith:String!):[String]
+    getfullform(Shortform:String!):[String]
+}
